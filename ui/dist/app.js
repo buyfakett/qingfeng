@@ -259,6 +259,9 @@ function renderDebugPanel(api, path) {
     const container = document.getElementById('debug-params-container');
     const bodyContainer = document.getElementById('debug-body-container');
     
+    // Render global headers (渲染全局请求头)
+    renderGlobalHeaders();
+    
     // Render parameter inputs
     const nonBodyParams = params.filter(p => p.in !== 'body');
     if (nonBodyParams.length > 0) {
@@ -292,6 +295,43 @@ function renderDebugPanel(api, path) {
     }
 }
 
+// Render global headers display (渲染全局请求头显示)
+function renderGlobalHeaders() {
+    const container = document.getElementById('global-headers-container');
+    const list = document.getElementById('global-headers-list');
+    
+    if (config.globalHeaders && config.globalHeaders.length > 0) {
+        container.classList.remove('hidden');
+        list.innerHTML = config.globalHeaders.map(h => `
+            <div class="flex items-center gap-2 py-1">
+                <span class="text-blue-500">${escapeHtml(h.key)}:</span>
+                <span style="color: var(--text-secondary)">${escapeHtml(maskValue(h.key, h.value))}</span>
+            </div>
+        `).join('');
+    } else {
+        container.classList.add('hidden');
+    }
+}
+
+// Mask sensitive header values (遮蔽敏感值)
+function maskValue(key, value) {
+    const sensitiveKeys = ['authorization', 'token', 'api-key', 'apikey', 'secret', 'password'];
+    if (sensitiveKeys.some(k => key.toLowerCase().includes(k))) {
+        if (value.length > 10) {
+            return value.substring(0, 6) + '****' + value.substring(value.length - 4);
+        }
+        return '****';
+    }
+    return value;
+}
+
+// Escape HTML to prevent XSS (转义 HTML)
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 // Send request
 async function sendRequest() {
     if (!currentApi) return;
@@ -302,6 +342,15 @@ async function sendRequest() {
     // Collect parameters
     const queryParams = new URLSearchParams();
     const headers = { 'Content-Type': 'application/json' };
+    
+    // Apply global headers from config (应用全局请求头)
+    if (config.globalHeaders && Array.isArray(config.globalHeaders)) {
+        config.globalHeaders.forEach(h => {
+            if (h.key && h.value) {
+                headers[h.key] = h.value;
+            }
+        });
+    }
     
     document.querySelectorAll('#debug-params-container input').forEach(input => {
         const name = input.dataset.param;

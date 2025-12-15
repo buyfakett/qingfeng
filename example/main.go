@@ -25,6 +25,11 @@ func main() {
 		DocPath:     "./docs/swagger.json",
 		EnableDebug: true,
 		DarkMode:    false,
+		// 设置全局请求头 (Set global headers)
+		GlobalHeaders: []qingfeng.Header{
+			{Key: "Authorization", Value: "Bearer your-token-here"},
+			{Key: "X-API-Key", Value: "your-api-key"},
+		},
 	}))
 
 	// API routes

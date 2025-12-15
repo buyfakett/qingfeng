@@ -16,6 +16,15 @@ import (
 //go:embed ui/dist/*
 var uiFS embed.FS
 
+// Header represents a custom HTTP header with key-value pair
+// 自定义 HTTP 请求头
+type Header struct {
+	// Key is the header name (e.g., "Authorization", "X-API-Key")
+	Key string `json:"key"`
+	// Value is the header value (e.g., "Bearer xxx", "your-api-key")
+	Value string `json:"value"`
+}
+
 // Config holds the configuration for knife4j UI
 type Config struct {
 	// Title of the API documentation
@@ -34,6 +43,9 @@ type Config struct {
 	EnableDebug bool
 	// DarkMode enables dark theme by default
 	DarkMode bool
+	// GlobalHeaders are custom headers that will be sent with every API request
+	// 全局请求头，会在每个 API 请求中自动添加
+	GlobalHeaders []Header
 }
 
 // DefaultConfig returns a default configuration
@@ -63,11 +75,12 @@ func Handler(cfg Config) gin.HandlerFunc {
 
 	// Prepare config JSON for frontend
 	configJSON, _ := json.Marshal(map[string]interface{}{
-		"title":       cfg.Title,
-		"description": cfg.Description,
-		"version":     cfg.Version,
-		"enableDebug": cfg.EnableDebug,
-		"darkMode":    cfg.DarkMode,
+		"title":         cfg.Title,
+		"description":   cfg.Description,
+		"version":       cfg.Version,
+		"enableDebug":   cfg.EnableDebug,
+		"darkMode":      cfg.DarkMode,
+		"globalHeaders": cfg.GlobalHeaders,
 	})
 
 	return func(c *gin.Context) {

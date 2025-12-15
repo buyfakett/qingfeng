@@ -203,6 +203,13 @@
                             <i class="fas fa-bug text-orange-500"></i>在线调试
                         </h4>
                         <div class="space-y-4">
+                            <!-- Global Headers Display -->
+                            <div id="global-headers-container" class="hidden">
+                                <label class="block text-sm font-medium mb-2 flex items-center gap-2">
+                                    <i class="fas fa-globe text-blue-500"></i>全局请求头
+                                </label>
+                                <div id="global-headers-list" class="rounded-lg p-3 text-sm font-mono" style="background: var(--bg-tertiary)"></div>
+                            </div>
                             <div id="debug-params-container"></div>
                             <div id="debug-body-container" class="hidden">
                                 <label class="block text-sm font-medium mb-2">请求体 (JSON)</label>
