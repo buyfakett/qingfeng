@@ -114,7 +114,7 @@
             
             <!-- Footer -->
             <div class="p-3 text-xs text-center" style="color: var(--text-secondary); border-top: 1px solid var(--border)">
-                Powered by <a href="https://github.com/go-knife4j/go-knife4j" class="text-blue-500 hover:underline">go-knife4j</a>
+                Powered by <a href="https://github.com/delfDog/QingFeng" class="text-blue-500 hover:underline">wdc</a>
             </div>
         </aside>
 
@@ -130,6 +130,10 @@
                     <button onclick="openGlobalHeadersModal()" class="px-4 py-2 rounded-lg border hover:bg-gray-100 dark:hover:bg-gray-700" style="border-color: var(--border)">
                         <i class="fas fa-key mr-2"></i>全局参数
                         <span id="headers-count" class="ml-1 px-1.5 py-0.5 text-xs rounded-full bg-blue-500 text-white hidden">0</span>
+                    </button>
+                    <button onclick="openTokenExtractModal()" class="px-4 py-2 rounded-lg border hover:bg-gray-100 dark:hover:bg-gray-700" style="border-color: var(--border)">
+                        <i class="fas fa-magic mr-2"></i>Token提取
+                        <span id="token-rules-count" class="ml-1 px-1.5 py-0.5 text-xs rounded-full bg-green-500 text-white hidden">0</span>
                     </button>
                     <button onclick="exportDoc()" class="px-4 py-2 rounded-lg border hover:bg-gray-100 dark:hover:bg-gray-700" style="border-color: var(--border)">
                         <i class="fas fa-download mr-2"></i>导出
@@ -269,6 +273,41 @@
                         <i class="fas fa-check mr-2"></i>保存
                     </button>
                     <button onclick="clearGlobalHeaders()" class="flex-1 py-2 rounded-lg border hover:bg-gray-100 dark:hover:bg-gray-700" style="border-color: var(--border)">
+                        <i class="fas fa-trash mr-2"></i>清空
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Token Extract Modal -->
+    <div id="token-extract-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeTokenExtractModal()"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-lg">
+            <div class="card rounded-xl p-6 m-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold flex items-center gap-2">
+                        <i class="fas fa-magic text-green-500"></i>Token 自动提取
+                    </h3>
+                    <button onclick="closeTokenExtractModal()" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <p class="text-sm mb-4" style="color: var(--text-secondary)">配置规则后，接口响应中的 token 会自动提取并设置到全局参数</p>
+                
+                <div id="token-rules-inputs" class="max-h-64 overflow-y-auto mb-4">
+                    <!-- Dynamic rule inputs will be added here -->
+                </div>
+                
+                <button onclick="addTokenRule()" class="w-full py-2 rounded-lg border border-dashed hover:bg-gray-50 dark:hover:bg-gray-800 text-sm" style="border-color: var(--border)">
+                    <i class="fas fa-plus mr-2"></i>添加规则
+                </button>
+                
+                <div class="flex gap-2 mt-4 pt-4" style="border-top: 1px solid var(--border)">
+                    <button onclick="saveTokenRules()" class="btn-primary flex-1 py-2 rounded-lg font-medium">
+                        <i class="fas fa-check mr-2"></i>保存
+                    </button>
+                    <button onclick="clearTokenRules()" class="flex-1 py-2 rounded-lg border hover:bg-gray-100 dark:hover:bg-gray-700" style="border-color: var(--border)">
                         <i class="fas fa-trash mr-2"></i>清空
                     </button>
                 </div>

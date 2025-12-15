@@ -4,6 +4,7 @@ let currentApi = null;
 let isDarkMode = false;
 let config = {};
 let globalHeaders = []; // 用户自定义的全局请求头
+let tokenExtractRules = []; // Token 自动提取规则
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
@@ -11,6 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadSwagger();
     setupSearch();
     loadGlobalHeadersFromStorage();
+    loadTokenExtractRulesFromStorage();
 });
 
 // Load configuration
@@ -411,6 +413,14 @@ function removeGlobalHeader(index) {
 function saveGlobalHeaders() {
     // Filter out empty headers
     globalHeaders = globalHeaders.filter(h => h.key || h.value);
+    
+    // Validate header keys (key 必须是 ASCII)
+    const invalidKeys = globalHeaders.filter(h => h.key && !isValidHeaderKey(h.key));
+    if (invalidKeys.length > 0) {
+        alert('Header Key 只能包含英文字符，不支持中文: ' + invalidKeys.map(h => h.key).join(', '));
+        return;
+    }
+    
     saveGlobalHeadersToStorage();
     updateHeadersCount();
     closeGlobalHeadersModal();
@@ -455,12 +465,267 @@ function escapeHtml(text) {
 
 // Encode header value to ensure ASCII-safe (编码 header 值确保 ASCII 安全)
 function encodeHeaderValue(value) {
+    if (!value) return value;
     // 检查是否包含非 ASCII 字符
     if (/[^\x00-\x7F]/.test(value)) {
         // 对非 ASCII 字符进行 URI 编码
         return encodeURIComponent(value);
     }
     return value;
+}
+
+// Check if header key is valid ASCII (检查 header key 是否为有效 ASCII)
+function isValidHeaderKey(key) {
+    return key && /^[\x21-\x7E]+$/.test(key);
+}
+
+// ==================== Token 自动提取功能 ====================
+
+// Load token extract rules from localStorage
+function loadTokenExtractRulesFromStorage() {
+    try {
+        const saved = localStorage.getItem('qingfeng_token_rules');
+        if (saved) {
+            tokenExtractRules = JSON.parse(saved);
+        }
+        updateTokenRulesCount();
+    } catch (e) {
+        console.log('Failed to load token rules from storage');
+    }
+}
+
+// Save token extract rules to localStorage
+function saveTokenExtractRulesToStorage() {
+    try {
+        localStorage.setItem('qingfeng_token_rules', JSON.stringify(tokenExtractRules));
+    } catch (e) {
+        console.log('Failed to save token rules to storage');
+    }
+}
+
+// Update token rules count badge
+function updateTokenRulesCount() {
+    const count = tokenExtractRules.filter(r => r.enabled && r.jsonPath && r.headerKey).length;
+    const badge = document.getElementById('token-rules-count');
+    if (badge) {
+        if (count > 0) {
+            badge.textContent = count;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
+}
+
+// Open token extract modal
+function openTokenExtractModal() {
+    document.getElementById('token-extract-modal').classList.remove('hidden');
+    renderTokenExtractRules();
+}
+
+// Close token extract modal
+function closeTokenExtractModal() {
+    document.getElementById('token-extract-modal').classList.add('hidden');
+}
+
+// Render token extract rules in modal
+function renderTokenExtractRules() {
+    const container = document.getElementById('token-rules-inputs');
+    
+    if (tokenExtractRules.length === 0) {
+        tokenExtractRules.push({ 
+            enabled: true,
+            pathPattern: '',
+            jsonPath: '', 
+            headerKey: 'Authorization', 
+            prefix: 'Bearer ' 
+        });
+    }
+    
+    container.innerHTML = tokenExtractRules.map((r, i) => `
+        <div class="p-3 rounded-lg mb-2" style="background: var(--bg-tertiary)">
+            <div class="flex items-center gap-2 mb-2">
+                <input type="checkbox" ${r.enabled ? 'checked' : ''} 
+                       onchange="updateTokenRule(${i}, 'enabled', this.checked)"
+                       class="w-4 h-4">
+                <span class="text-sm font-medium">规则 ${i + 1}</span>
+                <button onclick="removeTokenRule(${i})" class="ml-auto p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900 rounded">
+                    <i class="fas fa-trash-alt text-xs"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <div class="col-span-2">
+                    <label class="block text-xs mb-1" style="color: var(--text-secondary)">接口路径 (留空匹配所有，支持 * 通配符，如 /users/login 或 */login)</label>
+                    <input type="text" class="input-field w-full rounded px-2 py-1 text-sm" 
+                           placeholder="/users/login 或 */login" 
+                           value="${escapeHtml(r.pathPattern || '')}"
+                           onchange="updateTokenRule(${i}, 'pathPattern', this.value)">
+                </div>
+                <div>
+                    <label class="block text-xs mb-1" style="color: var(--text-secondary)">JSON 路径 (如 data.token)</label>
+                    <input type="text" class="input-field w-full rounded px-2 py-1 text-sm" 
+                           placeholder="data.token" 
+                           value="${escapeHtml(r.jsonPath)}"
+                           onchange="updateTokenRule(${i}, 'jsonPath', this.value)">
+                </div>
+                <div>
+                    <label class="block text-xs mb-1" style="color: var(--text-secondary)">Header Key</label>
+                    <input type="text" class="input-field w-full rounded px-2 py-1 text-sm" 
+                           placeholder="Authorization" 
+                           value="${escapeHtml(r.headerKey)}"
+                           onchange="updateTokenRule(${i}, 'headerKey', this.value)">
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-xs mb-1" style="color: var(--text-secondary)">前缀 (可选，如 "Bearer ")</label>
+                    <input type="text" class="input-field w-full rounded px-2 py-1 text-sm" 
+                           placeholder="Bearer " 
+                           value="${escapeHtml(r.prefix || '')}"
+                           onchange="updateTokenRule(${i}, 'prefix', this.value)">
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Add a new token rule
+function addTokenRule() {
+    tokenExtractRules.push({ 
+        enabled: true,
+        pathPattern: '',
+        jsonPath: '', 
+        headerKey: 'Authorization', 
+        prefix: 'Bearer ' 
+    });
+    renderTokenExtractRules();
+}
+
+// Update a token rule
+function updateTokenRule(index, field, value) {
+    tokenExtractRules[index][field] = value;
+}
+
+// Remove a token rule
+function removeTokenRule(index) {
+    tokenExtractRules.splice(index, 1);
+    renderTokenExtractRules();
+}
+
+// Save token rules
+function saveTokenRules() {
+    tokenExtractRules = tokenExtractRules.filter(r => r.jsonPath || r.headerKey);
+    
+    // Validate header keys
+    const invalidKeys = tokenExtractRules.filter(r => r.headerKey && !isValidHeaderKey(r.headerKey));
+    if (invalidKeys.length > 0) {
+        alert('Header Key 只能包含英文字符');
+        return;
+    }
+    
+    saveTokenExtractRulesToStorage();
+    updateTokenRulesCount();
+    closeTokenExtractModal();
+}
+
+// Clear all token rules
+function clearTokenRules() {
+    tokenExtractRules = [];
+    saveTokenExtractRulesToStorage();
+    updateTokenRulesCount();
+    renderTokenExtractRules();
+}
+
+// Extract token from response based on rules (从响应中提取 token)
+function extractTokenFromResponse(responseData) {
+    if (!currentApi) return;
+    
+    const currentPath = currentApi.path;
+    const enabledRules = tokenExtractRules.filter(r => r.enabled && r.jsonPath && r.headerKey);
+    
+    for (const rule of enabledRules) {
+        // 检查路径是否匹配
+        if (!matchPath(currentPath, rule.pathPattern)) {
+            continue;
+        }
+        
+        try {
+            const value = getValueByPath(responseData, rule.jsonPath);
+            if (value && typeof value === 'string') {
+                const headerValue = (rule.prefix || '') + value;
+                
+                // 更新或添加到全局 headers
+                const existingIndex = globalHeaders.findIndex(h => h.key === rule.headerKey);
+                if (existingIndex >= 0) {
+                    globalHeaders[existingIndex].value = headerValue;
+                } else {
+                    globalHeaders.push({ key: rule.headerKey, value: headerValue });
+                }
+                
+                // 保存并更新 UI
+                saveGlobalHeadersToStorage();
+                updateHeadersCount();
+                
+                // 显示提示
+                showToast(`已自动提取 ${rule.headerKey}: ${maskValue(rule.headerKey, headerValue)}`);
+                
+                // 如果当前有选中的 API，更新显示
+                if (currentApi) {
+                    renderGlobalHeaders();
+                }
+            }
+        } catch (e) {
+            console.log('Failed to extract token:', e);
+        }
+    }
+}
+
+// Get value from object by dot-notation path (通过路径获取对象值)
+function getValueByPath(obj, path) {
+    const keys = path.split('.');
+    let value = obj;
+    for (const key of keys) {
+        if (value === null || value === undefined) return undefined;
+        value = value[key];
+    }
+    return value;
+}
+
+// Match API path with pattern (匹配接口路径)
+// 支持: 精确匹配 "/users/login", 通配符 "*/login", "/users/*"
+function matchPath(apiPath, pattern) {
+    // 空 pattern 匹配所有
+    if (!pattern || pattern.trim() === '') {
+        return true;
+    }
+    
+    pattern = pattern.trim();
+    
+    // 精确匹配
+    if (pattern === apiPath) {
+        return true;
+    }
+    
+    // 通配符匹配: 将 * 转换为正则
+    const regexPattern = pattern
+        .replace(/[.+?^${}()|[\]\\]/g, '\\$&')  // 转义特殊字符
+        .replace(/\*/g, '.*');  // * 转为 .*
+    
+    const regex = new RegExp(`^${regexPattern}$`);
+    return regex.test(apiPath);
+}
+
+// Show toast notification (显示提示)
+function showToast(message) {
+    // 创建 toast 元素
+    const toast = document.createElement('div');
+    toast.className = 'fixed bottom-4 right-4 px-4 py-2 rounded-lg text-white text-sm z-50';
+    toast.style.background = '#22c55e';
+    toast.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${escapeHtml(message)}`;
+    document.body.appendChild(toast);
+    
+    // 3秒后移除
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
 }
 
 // Send request
@@ -476,7 +741,7 @@ async function sendRequest() {
     
     // Apply user-defined global headers (应用用户自定义的全局请求头)
     globalHeaders.forEach(h => {
-        if (h.key && h.value) {
+        if (h.key && h.value && isValidHeaderKey(h.key)) {
             // 确保 header 值只包含 ASCII 字符，非 ASCII 字符进行编码
             headers[h.key] = encodeHeaderValue(h.value);
         }
@@ -493,7 +758,7 @@ async function sendRequest() {
             url = url.replace(`{${name}}`, encodeURIComponent(value));
         } else if (location === 'query') {
             queryParams.append(name, value);
-        } else if (location === 'header') {
+        } else if (location === 'header' && isValidHeaderKey(name)) {
             headers[name] = encodeHeaderValue(value);
         }
     });
@@ -533,7 +798,13 @@ async function sendRequest() {
         document.getElementById('response-time').textContent = `${duration}ms`;
         
         try {
-            document.getElementById('response-content').textContent = JSON.stringify(JSON.parse(data), null, 2);
+            const jsonData = JSON.parse(data);
+            document.getElementById('response-content').textContent = JSON.stringify(jsonData, null, 2);
+            
+            // 尝试自动提取 token (Try to auto-extract token)
+            if (res.ok) {
+                extractTokenFromResponse(jsonData);
+            }
         } catch {
             document.getElementById('response-content').textContent = data;
         }
