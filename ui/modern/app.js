@@ -1,4 +1,4 @@
-// Go-Knife4j Frontend Application
+// QingFeng Swagger Frontend Application
 let swaggerData = null;
 let currentApi = null;
 let isDarkMode = false;

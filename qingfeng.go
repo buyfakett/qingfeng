@@ -77,7 +77,7 @@ type Config struct {
 func DefaultConfig() Config {
 	return Config{
 		Title:       "API Documentation",
-		Description: "API Documentation powered by QingFeng (青锋)",
+		Description: "API Documentation powered by wdc (青锋)",
 		Version:     "1.0.0",
 		BasePath:    "/doc",
 		DocPath:     "./docs/swagger.json",
