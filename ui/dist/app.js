@@ -3,12 +3,14 @@ let swaggerData = null;
 let currentApi = null;
 let isDarkMode = false;
 let config = {};
+let globalHeaders = []; // 用户自定义的全局请求头
 
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
     await loadConfig();
     await loadSwagger();
     setupSearch();
+    loadGlobalHeadersFromStorage();
 });
 
 // Load configuration
@@ -295,14 +297,16 @@ function renderDebugPanel(api, path) {
     }
 }
 
-// Render global headers display (渲染全局请求头显示)
+// Render global headers display in debug panel (渲染调试面板中的全局请求头显示)
 function renderGlobalHeaders() {
     const container = document.getElementById('global-headers-container');
     const list = document.getElementById('global-headers-list');
     
-    if (config.globalHeaders && config.globalHeaders.length > 0) {
+    const activeHeaders = globalHeaders.filter(h => h.key && h.value);
+    
+    if (activeHeaders.length > 0) {
         container.classList.remove('hidden');
-        list.innerHTML = config.globalHeaders.map(h => `
+        list.innerHTML = activeHeaders.map(h => `
             <div class="flex items-center gap-2 py-1">
                 <span class="text-blue-500">${escapeHtml(h.key)}:</span>
                 <span style="color: var(--text-secondary)">${escapeHtml(maskValue(h.key, h.value))}</span>
@@ -310,6 +314,123 @@ function renderGlobalHeaders() {
         `).join('');
     } else {
         container.classList.add('hidden');
+    }
+}
+
+// Load global headers from localStorage (从本地存储加载全局请求头)
+function loadGlobalHeadersFromStorage() {
+    try {
+        const saved = localStorage.getItem('qingfeng_global_headers');
+        if (saved) {
+            globalHeaders = JSON.parse(saved);
+        } else if (config.globalHeaders && config.globalHeaders.length > 0) {
+            // 如果本地没有保存，使用后端预设的默认值
+            globalHeaders = [...config.globalHeaders];
+        }
+        updateHeadersCount();
+    } catch (e) {
+        console.log('Failed to load global headers from storage');
+    }
+}
+
+// Save global headers to localStorage (保存全局请求头到本地存储)
+function saveGlobalHeadersToStorage() {
+    try {
+        localStorage.setItem('qingfeng_global_headers', JSON.stringify(globalHeaders));
+    } catch (e) {
+        console.log('Failed to save global headers to storage');
+    }
+}
+
+// Update headers count badge (更新请求头数量徽章)
+function updateHeadersCount() {
+    const count = globalHeaders.filter(h => h.key && h.value).length;
+    const badge = document.getElementById('headers-count');
+    if (count > 0) {
+        badge.textContent = count;
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+}
+
+// Open global headers modal (打开全局请求头弹窗)
+function openGlobalHeadersModal() {
+    document.getElementById('global-headers-modal').classList.remove('hidden');
+    renderGlobalHeadersInputs();
+}
+
+// Close global headers modal (关闭全局请求头弹窗)
+function closeGlobalHeadersModal() {
+    document.getElementById('global-headers-modal').classList.add('hidden');
+}
+
+// Render global headers inputs in modal (渲染弹窗中的请求头输入框)
+function renderGlobalHeadersInputs() {
+    const container = document.getElementById('global-headers-inputs');
+    
+    if (globalHeaders.length === 0) {
+        globalHeaders.push({ key: '', value: '' });
+    }
+    
+    container.innerHTML = globalHeaders.map((h, i) => `
+        <div class="flex gap-2 items-center" data-index="${i}">
+            <input type="text" class="input-field flex-1 rounded-lg px-3 py-2 text-sm" 
+                   placeholder="Header Key (如 Authorization)" 
+                   value="${escapeHtml(h.key)}"
+                   onchange="updateGlobalHeader(${i}, 'key', this.value)">
+            <input type="text" class="input-field flex-1 rounded-lg px-3 py-2 text-sm" 
+                   placeholder="Header Value (如 Bearer xxx)" 
+                   value="${escapeHtml(h.value)}"
+                   onchange="updateGlobalHeader(${i}, 'value', this.value)">
+            <button onclick="removeGlobalHeader(${i})" class="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900 rounded-lg">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+        </div>
+    `).join('');
+}
+
+// Add a new global header row (添加新的请求头行)
+function addGlobalHeader() {
+    globalHeaders.push({ key: '', value: '' });
+    renderGlobalHeadersInputs();
+}
+
+// Update a global header (更新请求头)
+function updateGlobalHeader(index, field, value) {
+    globalHeaders[index][field] = value;
+}
+
+// Remove a global header (删除请求头)
+function removeGlobalHeader(index) {
+    globalHeaders.splice(index, 1);
+    renderGlobalHeadersInputs();
+}
+
+// Save global headers (保存全局请求头)
+function saveGlobalHeaders() {
+    // Filter out empty headers
+    globalHeaders = globalHeaders.filter(h => h.key || h.value);
+    saveGlobalHeadersToStorage();
+    updateHeadersCount();
+    closeGlobalHeadersModal();
+    
+    // Re-render if an API is selected
+    if (currentApi) {
+        renderGlobalHeaders();
+    }
+}
+
+// Clear all global headers (清空所有请求头)
+function clearGlobalHeaders() {
+    globalHeaders = [];
+    saveGlobalHeadersToStorage();
+    updateHeadersCount();
+    renderGlobalHeadersInputs();
+    
+    // Re-render if an API is selected
+    if (currentApi) {
+        renderGlobalHeaders();
     }
 }
 
@@ -332,6 +453,16 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Encode header value to ensure ASCII-safe (编码 header 值确保 ASCII 安全)
+function encodeHeaderValue(value) {
+    // 检查是否包含非 ASCII 字符
+    if (/[^\x00-\x7F]/.test(value)) {
+        // 对非 ASCII 字符进行 URI 编码
+        return encodeURIComponent(value);
+    }
+    return value;
+}
+
 // Send request
 async function sendRequest() {
     if (!currentApi) return;
@@ -343,14 +474,13 @@ async function sendRequest() {
     const queryParams = new URLSearchParams();
     const headers = { 'Content-Type': 'application/json' };
     
-    // Apply global headers from config (应用全局请求头)
-    if (config.globalHeaders && Array.isArray(config.globalHeaders)) {
-        config.globalHeaders.forEach(h => {
-            if (h.key && h.value) {
-                headers[h.key] = h.value;
-            }
-        });
-    }
+    // Apply user-defined global headers (应用用户自定义的全局请求头)
+    globalHeaders.forEach(h => {
+        if (h.key && h.value) {
+            // 确保 header 值只包含 ASCII 字符，非 ASCII 字符进行编码
+            headers[h.key] = encodeHeaderValue(h.value);
+        }
+    });
     
     document.querySelectorAll('#debug-params-container input').forEach(input => {
         const name = input.dataset.param;
@@ -364,7 +494,7 @@ async function sendRequest() {
         } else if (location === 'query') {
             queryParams.append(name, value);
         } else if (location === 'header') {
-            headers[name] = value;
+            headers[name] = encodeHeaderValue(value);
         }
     });
     
