@@ -6,8 +6,10 @@ import (
 	"embed"
 	"encoding/json"
 	"io/fs"
+	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -46,6 +48,14 @@ type Config struct {
 	// GlobalHeaders are custom headers that will be sent with every API request
 	// 全局请求头，会在每个 API 请求中自动添加
 	GlobalHeaders []Header
+	// AutoGenerate automatically runs swag init on startup (启动时自动生成 swagger 文档)
+	AutoGenerate bool
+	// SwagSearchDir is the directory to search for swagger comments (default: ".")
+	// swag 搜索目录，默认为当前目录
+	SwagSearchDir string
+	// SwagOutputDir is the output directory for swagger files (default: "./docs")
+	// swagger 文件输出目录，默认为 ./docs
+	SwagOutputDir string
 }
 
 // DefaultConfig returns a default configuration
@@ -68,6 +78,11 @@ func Handler(cfg Config) gin.HandlerFunc {
 	}
 	if cfg.DocPath == "" {
 		cfg.DocPath = "./docs/swagger.json"
+	}
+
+	// Auto generate swagger docs if enabled
+	if cfg.AutoGenerate {
+		generateSwaggerDocs(cfg)
 	}
 
 	subFS, _ := fs.Sub(uiFS, "ui/dist")
@@ -122,4 +137,41 @@ func Handler(cfg Config) gin.HandlerFunc {
 func RegisterRoutes(router *gin.RouterGroup, cfg Config) {
 	handler := Handler(cfg)
 	router.GET("/*filepath", handler)
+}
+
+// generateSwaggerDocs runs swag init to generate swagger documentation
+// 运行 swag init 生成 swagger 文档
+func generateSwaggerDocs(cfg Config) {
+	// Check if swag is installed
+	_, err := exec.LookPath("swag")
+	if err != nil {
+		log.Println("[QingFeng] swag command not found, skipping auto-generation. Install with: go install github.com/swaggo/swag/cmd/swag@latest")
+		// 中文提示
+		log.Println("[QingFeng] swag 未找到, 跳过更新Swagger. 安装命令: go install github.com/swaggo/swag/cmd/swag@latest")
+		// 中文提示
+		return
+	}
+
+	searchDir := cfg.SwagSearchDir
+	if searchDir == "" {
+		searchDir = "."
+	}
+
+	outputDir := cfg.SwagOutputDir
+	if outputDir == "" {
+		outputDir = "./docs"
+	}
+
+	log.Println("[QingFeng] Auto-generating swagger docs...")
+
+	cmd := exec.Command("swag", "init", "-d", searchDir, "-o", outputDir)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Run(); err != nil {
+		log.Printf("[QingFeng] Failed to generate swagger docs: %v\n", err)
+		return
+	}
+
+	log.Println("[QingFeng] Swagger docs generated successfully!")
 }

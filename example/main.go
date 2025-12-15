@@ -18,17 +18,14 @@ func main() {
 
 	// Register QingFeng documentation UI (注册青锋文档 UI)
 	r.GET("/doc/*any", qingfeng.Handler(qingfeng.Config{
-		Title:       "示例项目 API",
-		Description: "这是一个示例项目的API文档",
-		Version:     "1.0.0",
-		BasePath:    "/doc",
-		DocPath:     "./docs/swagger.json",
-		EnableDebug: true,
-		DarkMode:    false,
-		// 可选：预设全局请求头，用户也可以在 UI 上动态配置
-		// GlobalHeaders: []qingfeng.Header{
-		// 	{Key: "Authorization", Value: "Bearer your-token-here"},
-		// },
+		Title:        "示例项目 API",
+		Description:  "这是一个示例项目的API文档",
+		Version:      "1.0.0",
+		BasePath:     "/doc",
+		DocPath:      "./docs/swagger.json",
+		EnableDebug:  true,
+		DarkMode:     false,
+		AutoGenerate: true, // 启动时自动生成 swagger 文档，无需手动运行 swag init
 	}))
 
 	// API routes
