@@ -28,6 +28,22 @@ func main() {
 		DarkMode:     false,
 		AutoGenerate: true,                   // 启动时自动生成 swagger 文档
 		UITheme:      qingfeng.ThemeDefault,  // UI 主题: ThemeDefault, ThemeMinimal, ThemeModern
+		
+		// 自定义 Logo（可选）
+		// Logo:     "https://example.com/logo.png",
+		// LogoLink: "https://example.com",
+		
+		// 多环境配置（可选）
+		Environments: []qingfeng.Environment{
+			{Name: "本地开发", BaseURL: "/api/v1"},
+			{Name: "测试环境", BaseURL: "https://test-api.example.com/api/v1"},
+			{Name: "生产环境", BaseURL: "https://api.example.com/api/v1"},
+		},
+		
+		// 全局请求头（可选）
+		// GlobalHeaders: []qingfeng.Header{
+		// 	{Key: "Authorization", Value: "Bearer your-token"},
+		// },
 	}))
 
 	// API routes

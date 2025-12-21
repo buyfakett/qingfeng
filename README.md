@@ -173,6 +173,17 @@ r.GET("/doc/*any", qingfeng.Handler(qingfeng.Config{
     SwagSearchDir: ".",
     // swagger 文件输出目录（AutoGenerate 为 true 时生效）
     SwagOutputDir: "./docs",
+    
+    // 自定义 Logo（v1.3.0 新增）
+    Logo: "https://example.com/logo.png",  // 支持 URL 或 base64
+    LogoLink: "https://example.com",       // Logo 点击跳转链接
+    
+    // 多环境配置（v1.3.0 新增）
+    Environments: []qingfeng.Environment{
+        {Name: "本地开发", BaseURL: "/api/v1"},
+        {Name: "测试环境", BaseURL: "https://test-api.example.com/api/v1"},
+        {Name: "生产环境", BaseURL: "https://api.example.com/api/v1"},
+    },
 }))
 
 ```
@@ -296,6 +307,16 @@ r.GET("/doc/*any", qingfeng.Handler(qingfeng.Config{
     LogoLink: "https://example.com",          // 点击跳转
 }))
 ```
+
+## 📝 请求体模板
+
+在调试面板中，可以将常用的请求体保存为模板：
+
+1. 在请求体输入框上方点击「保存模板」
+2. 输入模板名称
+3. 下次使用时点击「模板」按钮选择已保存的模板
+
+模板按接口保存，每个接口可以有多个模板。
 
 ## ⌨️ 快捷键
 

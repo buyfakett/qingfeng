@@ -142,35 +142,46 @@ func hello(c *gin.Context) {
 ### 3.1 完整的配置说明（只是说明可 步骤3即可正常运行）
 ```go
 r.GET("/doc/*any", qingfeng.Handler(qingfeng.Config{
-    // 文档标题
-    Title: "我的 API",
-    // 文档描述
-    Description: "API 文档描述",
-    // API 版本号
+    // Document title
+    Title: "My API",
+    // Document description
+    Description: "API Documentation",
+    // API version
     Version: "1.0.0",
-    // 文档路由前缀
+    // Documentation route prefix
     BasePath: "/doc",
-    // swagger.json 文件路径
+    // Path to swagger.json
     DocPath: "./docs/swagger.json",
-    // 直接传入 swagger JSON 内容（与 DocPath 二选一）
+    // Pass swagger spec directly (alternative to DocPath)
     // DocJSON: []byte{},
-    // 是否启用在线调试
+    // Enable online debugging
     EnableDebug: true,
-    // 是否默认深色模式
+    // Enable dark mode by default
     DarkMode: false,
-    // UI 主题风格: ThemeDefault(默认) / ThemeMinimal(简约) / ThemeModern(现代)
+    // UI theme: ThemeDefault / ThemeMinimal / ThemeModern
     UITheme: qingfeng.ThemeDefault,
-    // 全局请求头配置
+    // Global headers configuration
     GlobalHeaders: []qingfeng.Header{
         {Key: "Authorization", Value: "Bearer your-token"},
         // {Key: "X-API-Key", Value: "your-api-key"},
     },
-    // 启动时自动运行 swag init 生成文档
+    // Auto run swag init on startup
     AutoGenerate: true,
-    // swag 搜索目录（AutoGenerate 为 true 时生效）
+    // Swag search directory (when AutoGenerate is true)
     SwagSearchDir: ".",
-    // swagger 文件输出目录（AutoGenerate 为 true 时生效）
+    // Swagger output directory (when AutoGenerate is true)
     SwagOutputDir: "./docs",
+    
+    // Custom Logo (v1.3.0+)
+    Logo: "https://example.com/logo.png",  // URL or base64
+    LogoLink: "https://example.com",       // Click to navigate
+    
+    // Multi-environment configuration (v1.3.0+)
+    Environments: []qingfeng.Environment{
+        {Name: "Local Dev", BaseURL: "/api/v1"},
+        {Name: "Test", BaseURL: "https://test-api.example.com/api/v1"},
+        {Name: "Production", BaseURL: "https://api.example.com/api/v1"},
+    },
 }))
 
 ```
@@ -292,6 +303,16 @@ r.GET("/doc/*any", qingfeng.Handler(qingfeng.Config{
     LogoLink: "https://example.com",          // click to navigate
 }))
 ```
+
+## 📝 Request Body Templates
+
+Save frequently used request bodies as templates:
+
+1. Click "Save Template" above the request body input
+2. Enter a template name
+3. Click "Template" button to load saved templates
+
+Templates are saved per API endpoint, each endpoint can have multiple templates.
 
 ## ⌨️ Keyboard Shortcuts
 
