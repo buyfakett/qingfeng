@@ -29,6 +29,9 @@ func main() {
 		AutoGenerate: true,                   // 启动时自动生成 swagger 文档
 		UITheme:      qingfeng.ThemeDefault,  // UI 主题: ThemeDefault, ThemeMinimal, ThemeModern
 		
+		// 自定义 swag init 参数（可选）
+		// SwagArgs: []string{"--parseDependency", "--parseInternal"},
+		
 		// 自定义 Logo（可选）
 		// Logo:     "https://example.com/logo.png",
 		// LogoLink: "https://example.com",

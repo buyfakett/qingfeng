@@ -81,6 +81,9 @@ type Config struct {
 	// SwagOutputDir is the output directory for swagger files (default: "./docs")
 	// swagger 文件输出目录，默认为 ./docs
 	SwagOutputDir string
+	// SwagArgs is additional arguments for swag init command
+	// swag init 的额外参数，如 []string{"--parseDependency", "--parseInternal"}
+	SwagArgs []string
 	// UITheme selects the UI theme: "default", "minimal", "modern" (UI 主题选择)
 	UITheme UITheme
 	// Logo is the URL or base64 of custom logo image (自定义 Logo)
@@ -210,9 +213,7 @@ func generateSwaggerDocs(cfg Config) {
 	_, err := exec.LookPath("swag")
 	if err != nil {
 		log.Println("[QingFeng] swag command not found, skipping auto-generation. Install with: go install github.com/swaggo/swag/cmd/swag@latest")
-		// 中文提示
 		log.Println("[QingFeng] swag 未找到, 跳过更新Swagger. 安装命令: go install github.com/swaggo/swag/cmd/swag@latest")
-		// 中文提示
 		return
 	}
 
@@ -228,7 +229,16 @@ func generateSwaggerDocs(cfg Config) {
 
 	log.Println("[QingFeng] Auto-generating swagger docs...")
 
-	cmd := exec.Command("swag", "init", "-d", searchDir, "-o", outputDir)
+	// Build command arguments
+	args := []string{"init", "-d", searchDir, "-o", outputDir}
+	
+	// Append custom arguments
+	if len(cfg.SwagArgs) > 0 {
+		args = append(args, cfg.SwagArgs...)
+		log.Printf("[QingFeng] Using custom swag args: %v\n", cfg.SwagArgs)
+	}
+
+	cmd := exec.Command("swag", args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
