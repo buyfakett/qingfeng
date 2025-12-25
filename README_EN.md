@@ -396,6 +396,12 @@ swag init
 
 Issues and Pull Requests are welcome!
 
+## 💬 Contact
+
+Scan to add WeChat, note "QingFeng" to join the group:
+
+<img src="./screenshots/wechat.png" width="200" alt="WeChat QR Code">
+
 ## 📄 License
 
 MIT License

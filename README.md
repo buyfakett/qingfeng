@@ -400,6 +400,12 @@ swag init
 
 欢迎提交 Issue 和 Pull Request！
 
+## 💬 交流群
+
+扫码添加微信，备注「青峰」加入交流群：
+
+<img src="./screenshots/wechat.png" width="200" alt="微信二维码">
+
 ## 📄 License
 
 MIT License
