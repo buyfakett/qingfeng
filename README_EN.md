@@ -6,6 +6,9 @@ English | [中文](./README.md)
 
 > Better API documentation experience for Go developers.
 
+[![GitHub](https://img.shields.io/badge/GitHub-wdcbot/qingfeng-blue?logo=github)](https://github.com/wdcbot/qingfeng)
+[![Gitee](https://img.shields.io/badge/Gitee-Mirror-red?logo=gitee)](https://gitee.com/xiaowan1997/qingfeng)
+
 ## 📸 Preview
 
 ### Default Theme
@@ -52,7 +55,7 @@ If your project is already using other Swagger UI components (like gin-swagger, 
 
 1. Install QingFeng Swag:
 ```bash
-go get gitee.com/xiaowan1997/qingfeng
+go get github.com/wdcbot/qingfeng
 ```
 
 2. Replace route registration (keep your existing swag annotations and docs directory):
@@ -64,7 +67,7 @@ import ginSwagger "github.com/swaggo/gin-swagger"
 r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 // After (QingFeng Swag)
-import qingfeng "gitee.com/xiaowan1997/qingfeng"
+import qingfeng "github.com/wdcbot/qingfeng"
 r.GET("/doc/*any", qingfeng.Handler(qingfeng.Config{
     Title:   "My API",
     BasePath: "/doc",
@@ -94,7 +97,7 @@ go mod init myapi
 
 ```bash
 go get github.com/gin-gonic/gin
-go get gitee.com/xiaowan1997/qingfeng@latest
+go get github.com/wdcbot/qingfeng@latest
 go install github.com/swaggo/swag/cmd/swag@latest
 ```
 
@@ -105,7 +108,7 @@ package main
 
 import (
     "github.com/gin-gonic/gin"
-    qingfeng "gitee.com/xiaowan1997/qingfeng"
+    qingfeng "github.com/wdcbot/qingfeng"
 )
 
 // @title My API
@@ -206,7 +209,7 @@ package main
 
 import (
     "github.com/gin-gonic/gin"
-    qingfeng "gitee.com/xiaowan1997/qingfeng"
+    qingfeng "github.com/wdcbot/qingfeng"
 )
 
 func main() {

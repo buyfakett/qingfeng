@@ -1,4 +1,4 @@
-module gitee.com/xiaowan1997/qingfeng
+module github.com/wdcbot/qingfeng
 
 go 1.20
 
