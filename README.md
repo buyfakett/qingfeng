@@ -56,6 +56,7 @@
 1. 安装青峰Swag：
 ```bash
 go get github.com/wdcbot/qingfeng
+# 国内镜像: go get gitee.com/xiaowan1997/qingfeng
 ```
 
 2. 替换路由注册（保留原有的 swag 注释和 docs 目录）：
@@ -98,6 +99,7 @@ go mod init myapi
 ```bash
 go get github.com/gin-gonic/gin
 go get github.com/wdcbot/qingfeng@latest
+# 国内镜像: go get gitee.com/xiaowan1997/qingfeng@latest
 go install github.com/swaggo/swag/cmd/swag@latest
 ```
 

@@ -56,6 +56,7 @@ If your project is already using other Swagger UI components (like gin-swagger, 
 1. Install QingFeng Swag:
 ```bash
 go get github.com/wdcbot/qingfeng
+# China mirror: go get gitee.com/xiaowan1997/qingfeng
 ```
 
 2. Replace route registration (keep your existing swag annotations and docs directory):
@@ -98,6 +99,7 @@ go mod init myapi
 ```bash
 go get github.com/gin-gonic/gin
 go get github.com/wdcbot/qingfeng@latest
+# China mirror: go get gitee.com/xiaowan1997/qingfeng@latest
 go install github.com/swaggo/swag/cmd/swag@latest
 ```
 
