@@ -52,7 +52,7 @@ If your project is already using other Swagger UI components (like gin-swagger, 
 
 1. Install QingFeng Swag:
 ```bash
-go get github.com/delfDog/QingFeng
+go get gitee.com/xiaowan1997/qingfeng
 ```
 
 2. Replace route registration (keep your existing swag annotations and docs directory):
@@ -64,7 +64,7 @@ import ginSwagger "github.com/swaggo/gin-swagger"
 r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 // After (QingFeng Swag)
-import qingfeng "github.com/delfDog/QingFeng"
+import qingfeng "gitee.com/xiaowan1997/qingfeng"
 r.GET("/doc/*any", qingfeng.Handler(qingfeng.Config{
     Title:   "My API",
     BasePath: "/doc",
@@ -94,7 +94,7 @@ go mod init myapi
 
 ```bash
 go get github.com/gin-gonic/gin
-go get github.com/delfDog/QingFeng@latest
+go get gitee.com/xiaowan1997/qingfeng@latest
 go install github.com/swaggo/swag/cmd/swag@latest
 ```
 
@@ -105,7 +105,7 @@ package main
 
 import (
     "github.com/gin-gonic/gin"
-    qingfeng "github.com/delfDog/QingFeng"
+    qingfeng "gitee.com/xiaowan1997/qingfeng"
 )
 
 // @title My API
@@ -206,7 +206,7 @@ package main
 
 import (
     "github.com/gin-gonic/gin"
-    qingfeng "github.com/delfDog/QingFeng"
+    qingfeng "gitee.com/xiaowan1997/qingfeng"
 )
 
 func main() {

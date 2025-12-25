@@ -1,4 +1,4 @@
-module github.com/delfDog/QingFeng
+module gitee.com/xiaowan1997/qingfeng
 
 go 1.20
 

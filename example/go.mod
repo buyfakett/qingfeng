@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/gin-gonic/gin v1.9.1
-	github.com/delfDog/QingFeng v0.0.0
+	gitee.com/xiaowan1997/qingfeng v0.0.0
 )
 
 require (
@@ -34,4 +34,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/delfDog/QingFeng => ../
+replace gitee.com/xiaowan1997/qingfeng => ../

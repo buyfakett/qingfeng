@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	qingfeng "github.com/delfDog/QingFeng"
+	qingfeng "gitee.com/xiaowan1997/qingfeng"
 )
 
 // @title Example API
