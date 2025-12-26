@@ -1,0 +1,13 @@
+{
+  "name": "qingfeng",
+  "version": "1.0.0",
+  "description": "A beautiful Swagger UI replacement for Go Gin framework",
+  "scripts": {
+    "build": "./node_modules/.bin/tailwindcss -i ./tailwind-base.css -o ./ui/assets/css/tailwind.min.css"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1",
+    "postcss": "^8.4.32",
+    "autoprefixer": "^10.4.16"
+  }
+}
