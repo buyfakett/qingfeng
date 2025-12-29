@@ -290,7 +290,7 @@ func main() {
 package main
 
 import (
-    "embed"
+    _"embed""embed"
     "github.com/gin-gonic/gin"
     qingfeng "github.com/wdcbot/qingfeng"
 )

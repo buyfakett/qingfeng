@@ -18,6 +18,18 @@ definitions:
         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         type: string
     type: object
+  main.NodeGroupRequest:
+    properties:
+      group_name:
+        example: 测试分组
+        type: string
+      route_type:
+        enum:
+        - 0
+        - 1
+        example: 1
+        type: integer
+    type: object
   main.Response:
     properties:
       code:
@@ -112,6 +124,41 @@ paths:
       summary: 用户登出
       tags:
       - Admin-Auth
+  /node/groups:
+    post:
+      consumes:
+      - application/json
+      description: '创建一个新的节点分组，route_type: 0-普通路线, 1-优质路线'
+      parameters:
+      - description: 启用状态
+        enum:
+        - t1
+        - t2
+        - t3
+        in: header
+        name: enable
+        required: true
+        type: string
+      - description: 分组信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.NodeGroupRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: 创建节点分组
+      tags:
+      - Node
   /upload/avatar:
     post:
       consumes:

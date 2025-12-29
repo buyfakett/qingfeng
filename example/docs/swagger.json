@@ -90,6 +90,58 @@
                 }
             }
         },
+        "/node/groups": {
+            "post": {
+                "description": "创建一个新的节点分组，route_type: 0-普通路线, 1-优质路线",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Node"
+                ],
+                "summary": "创建节点分组",
+                "parameters": [
+                    {
+                        "enum": [
+                            "t1",
+                            "t2",
+                            "t3"
+                        ],
+                        "type": "string",
+                        "description": "启用状态",
+                        "name": "enable",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "分组信息",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.NodeGroupRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/upload/avatar": {
             "post": {
                 "description": "上传用户头像图片",
@@ -485,6 +537,23 @@
                 "token": {
                     "type": "string",
                     "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                }
+            }
+        },
+        "main.NodeGroupRequest": {
+            "type": "object",
+            "properties": {
+                "group_name": {
+                    "type": "string",
+                    "example": "测试分组"
+                },
+                "route_type": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "example": 1
                 }
             }
         },

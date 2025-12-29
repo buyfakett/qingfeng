@@ -744,11 +744,13 @@ function renderDebugPanel(api, path) {
         container.innerHTML = nonBodyParams.map(p => {
             const savedValue = savedData.params?.[p.name] || '';
             const isFileParam = p.in === 'formData' && p.type === 'file';
+            const paramType = p.type || 'string';
             return `
             <div class="mb-3">
                 <label class="block text-sm font-medium mb-1">
                     ${p.name} 
                     <span class="text-xs px-1.5 py-0.5 rounded" style="background: var(--bg-tertiary)">${p.in}</span>
+                    <span class="text-xs px-1.5 py-0.5 rounded ml-1" style="background: var(--bg-tertiary)">${paramType}</span>
                     ${isFileParam ? '<span class="text-xs px-1.5 py-0.5 rounded ml-1" style="background: var(--primary); color: white">file</span>' : ''}
                     ${p.required ? '<span class="text-red-500">*</span>' : ''}
                 </label>
@@ -761,9 +763,16 @@ function renderDebugPanel(api, path) {
                            onchange="updateFileList(this)">
                     <div class="file-list mt-2 text-sm" style="color: var(--text-secondary)"></div>
                 </div>
+                ` : p.enum ? `
+                <select class="input-field w-full rounded-lg px-3 py-2" 
+                       data-param="${p.name}" data-in="${p.in}" data-type="${paramType}"
+                       onchange="saveDebugParam('${p.name}', this.value)">
+                    <option value="">-- 请选择 --</option>
+                    ${p.enum.map(v => `<option value="${escapeHtml(String(v))}" ${String(v) === String(savedValue) ? 'selected' : ''}>${escapeHtml(String(v))}</option>`).join('')}
+                </select>
                 ` : `
                 <input type="text" class="input-field w-full rounded-lg px-3 py-2" 
-                       data-param="${p.name}" data-in="${p.in}" 
+                       data-param="${p.name}" data-in="${p.in}" data-type="${paramType}"
                        placeholder="${p.description || p.name}"
                        value="${escapeHtml(savedValue)}"
                        oninput="saveDebugParam('${p.name}', this.value)">
@@ -903,11 +912,11 @@ function renderBodyFieldInput(key, prop, value) {
     const escapedValue = escapeHtml(typeof value === 'object' ? JSON.stringify(value) : String(value ?? ''));
     
     if (prop.enum) {
-        // 枚举类型用下拉框
+        // 枚举类型用下拉框，保留 data-type 以便类型转换
         const options = prop.enum.map(v => 
-            `<option value="${escapeHtml(v)}" ${v === value ? 'selected' : ''}>${escapeHtml(v)}</option>`
+            `<option value="${escapeHtml(String(v))}" ${String(v) === String(value) ? 'selected' : ''}>${escapeHtml(String(v))}</option>`
         ).join('');
-        return `<select class="input-field w-full rounded px-2 py-1.5 text-sm" data-body-field="${escapeHtml(key)}" onchange="onBodyFieldChange()">
+        return `<select class="input-field w-full rounded px-2 py-1.5 text-sm" data-body-field="${escapeHtml(key)}" data-type="${type}" onchange="onBodyFieldChange()">
             <option value="">-- 请选择 --</option>${options}
         </select>`;
     }
@@ -974,7 +983,7 @@ function getBodyFromFields() {
         } else if (type === 'number') {
             value = parseFloat(value);
             if (isNaN(value)) return;
-        } else if (type === 'boolean' || el.tagName === 'SELECT') {
+        } else if (type === 'boolean') {
             if (value === 'true') value = true;
             else if (value === 'false') value = false;
         } else if (type === 'array' || type === 'object') {
@@ -1662,7 +1671,7 @@ async function sendRequest() {
     
     // 必填参数校验
     const missingParams = [];
-    document.querySelectorAll('#debug-params-container input').forEach(input => {
+    document.querySelectorAll('#debug-params-container input, #debug-params-container select').forEach(input => {
         const name = input.dataset.param;
         const required = api.parameters?.find(p => p.name === name)?.required;
         if (required && !input.value.trim()) {
@@ -1704,7 +1713,7 @@ async function sendRequest() {
         }
     });
     
-    document.querySelectorAll('#debug-params-container input').forEach(input => {
+    document.querySelectorAll('#debug-params-container input, #debug-params-container select').forEach(input => {
         const name = input.dataset.param;
         const location = input.dataset.in;
         const isFile = input.dataset.type === 'file';

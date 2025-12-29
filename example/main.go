@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -62,6 +63,9 @@ func main() {
 		api.POST("/users", createUser)
 		api.PUT("/users/:id", updateUser)
 		api.DELETE("/users/:id", deleteUser)
+		
+		// 节点分组接口
+		api.POST("/node/groups", createNodeGroup)
 		
 		// 文件上传接口
 		api.POST("/upload/avatar", uploadAvatar)
@@ -220,6 +224,41 @@ func login(c *gin.Context) {
 // @Router /auth/logout [post]
 func logout(c *gin.Context) {
 	c.JSON(http.StatusOK, Response{Code: 200, Message: "登出成功"})
+}
+
+// NodeGroupRequest 节点分组请求
+type NodeGroupRequest struct {
+	GroupName string `json:"group_name" example:"测试分组"`
+	RouteType int    `json:"route_type" example:"1" enums:"0,1"`
+}
+
+// @Summary 创建节点分组
+// @Description 创建一个新的节点分组，route_type: 0-普通路线, 1-优质路线
+// @Tags Node
+// @Accept json
+// @Produce json
+// @Param enable header string true "启用状态" Enums(t1, t2, t3)
+// @Param request body NodeGroupRequest true "分组信息"
+// @Success 200 {object} Response
+// @Failure 400 {object} Response
+// @Router /node/groups [post]
+func createNodeGroup(c *gin.Context) {
+	var req NodeGroupRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, Response{Code: 400, Message: "参数错误: " + err.Error()})
+		return
+	}
+	
+	// 验证 route_type 必须是数字类型
+	c.JSON(http.StatusOK, Response{
+		Code:    200,
+		Message: "创建成功",
+		Data: map[string]interface{}{
+			"group_name":      req.GroupName,
+			"route_type":      req.RouteType,
+			"route_type_type": fmt.Sprintf("%T", req.RouteType),
+		},
+	})
 }
 
 // UploadResponse 上传响应
