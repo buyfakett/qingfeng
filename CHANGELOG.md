@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.5] - 2024-12-30
+
+### Added
+- 🔌 **多框架支持** - 新增 `HTTPHandler()` 返回标准 `http.Handler`，支持 Fiber、Echo、Chi、标准库等任意 Go Web 框架
+- 📝 README 添加多框架使用示例
+
+### Changed
+- 重构 `Handler()` 内部调用 `HTTPHandler()`，统一维护一份核心代码
+
+### Fixed
+- 修复枚举参数类型转换问题，integer 类型枚举不再发送为字符串 (#2)
+- 修复 select 下拉框的值未被收集到请求中的问题 (#3)
+- 非 body 参数（query/path/header）支持枚举下拉选择
+
 ## [1.5.0] - 2024-12-26
 
 ### Added
