@@ -765,7 +765,8 @@ function renderDebugPanel(api, path) {
     const nonBodyParams = params.filter(p => p.in !== 'body');
     if (nonBodyParams.length > 0) {
         container.innerHTML = nonBodyParams.map(p => {
-            const savedValue = savedData.params?.[p.name] || '';
+            // 优先使用保存的值，其次使用参数的默认值
+            const savedValue = savedData.params?.[p.name] !== undefined ? savedData.params[p.name] : (p.default !== undefined ? String(p.default) : '');
             const isFileParam = p.in === 'formData' && p.type === 'file';
             const paramType = p.type || 'string';
             return `
@@ -792,6 +793,14 @@ function renderDebugPanel(api, path) {
                        onchange="saveDebugParam('${p.name}', this.value)">
                     <option value="">-- 请选择 --</option>
                     ${p.enum.map(v => `<option value="${escapeHtml(String(v))}" ${String(v) === String(savedValue) ? 'selected' : ''}>${escapeHtml(String(v))}</option>`).join('')}
+                </select>
+                ` : paramType === 'boolean' ? `
+                <select class="input-field w-full rounded-lg px-3 py-2" 
+                       data-param="${p.name}" data-in="${p.in}" data-type="${paramType}"
+                       onchange="saveDebugParam('${p.name}', this.value)">
+                    <option value="">-- 请选择 --</option>
+                    <option value="true" ${savedValue === 'true' ? 'selected' : ''}>true</option>
+                    <option value="false" ${savedValue === 'false' ? 'selected' : ''}>false</option>
                 </select>
                 ` : `
                 <input type="text" class="input-field w-full rounded-lg px-3 py-2" 
@@ -903,7 +912,8 @@ function renderBodyFields(schema, savedValues) {
         const propType = prop.type || 'string';
         const description = prop.description || '';
         const example = prop.example;
-        const savedValue = savedValues[key] !== undefined ? savedValues[key] : (example !== undefined ? example : '');
+        const defaultVal = prop.default;
+        const savedValue = savedValues[key] !== undefined ? savedValues[key] : (example !== undefined ? example : (defaultVal !== undefined ? defaultVal : ''));
         
         html += `<tr style="border-bottom: 1px solid var(--border)">
             <td class="py-2 px-2">

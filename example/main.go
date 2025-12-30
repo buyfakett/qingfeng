@@ -237,7 +237,9 @@ type NodeGroupRequest struct {
 // @Tags Node
 // @Accept json
 // @Produce json
-// @Param enable header string true "启用状态" Enums(t1, t2, t3)
+// @Param enable header bool true "true-启动长连接，false-停止长连接" Enums(true, false) default(true)
+// @Param status header string true "启用状态" Enums(t1, t2, t3) default(t2)
+// @Param debug header bool false "调试模式" default(true)
 // @Param request body NodeGroupRequest true "分组信息"
 // @Success 200 {object} Response
 // @Failure 400 {object} Response

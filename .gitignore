@@ -28,3 +28,6 @@ Thumbs.db
 
 build/
 node_modules/
+
+# Generated swagger docs
+example/docs/
