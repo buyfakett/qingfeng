@@ -104,15 +104,14 @@ function setupCustomLogo(logo, link) {
     const parent = titleEl.parentElement;
     const logoHtml = `
         <${link ? `a href="${link}" target="_blank"` : 'span'} class="flex items-center gap-2">
-            <img src="${logoSrc}" alt="Logo" class="h-8 w-8 object-contain rounded">
+            <img src="${logoSrc}" alt="Logo" class="h-8 w-8 object-contain rounded border-none">
             <span id="doc-title">${config.title || 'API Docs'}</span>
         </${link ? 'a' : 'span'}>
     `;
     
-    // 替换原有的标题
-    const icon = parent.querySelector('i');
-    if (icon) icon.remove();
-    titleEl.outerHTML = logoHtml;
+    // 完全替换父元素的内容，移除所有原有元素
+    parent.innerHTML = '';
+    parent.innerHTML = logoHtml;
 }
 
 // 设置环境选择器
