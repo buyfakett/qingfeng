@@ -91,10 +91,20 @@ function setupCustomLogo(logo, link) {
     const titleEl = document.getElementById('doc-title');
     if (!titleEl) return;
     
+    // 处理base64格式的logo
+    let logoSrc = logo;
+    if (logo && !logo.startsWith('http') && !logo.startsWith('data:')) {
+        // 检查是否为base64字符串
+        if (/^[A-Za-z0-9+/=]+$/.test(logo)) {
+            // 默认使用png格式，用户可以自行添加完整的data URI
+            logoSrc = `data:image/png;base64,${logo}`;
+        }
+    }
+    
     const parent = titleEl.parentElement;
     const logoHtml = `
         <${link ? `a href="${link}" target="_blank"` : 'span'} class="flex items-center gap-2">
-            <img src="${logo}" alt="Logo" class="h-8 w-8 object-contain rounded">
+            <img src="${logoSrc}" alt="Logo" class="h-8 w-8 object-contain rounded">
             <span id="doc-title">${config.title || 'API Docs'}</span>
         </${link ? 'a' : 'span'}>
     `;
