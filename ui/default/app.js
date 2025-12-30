@@ -78,9 +78,16 @@ async function loadConfig() {
             setupEnvironmentSelector();
         }
         
-        if (config.darkMode) {
-            toggleDarkMode();
+        // 检查本地存储是否有主题设置
+        const savedDarkMode = localStorage.getItem('qingfeng_dark_mode');
+        if (savedDarkMode === null) {
+            // 本地存储没有值，使用配置文件的值作为初始值
+            isDarkMode = config.darkMode || false;
+            applyTheme();
+            // 保存到本地存储，以便下次刷新时保持一致
+            saveThemeToStorage();
         }
+        // 如果本地存储有值，不做任何操作，因为主题已经在页面加载时从本地存储恢复了
     } catch (e) {
         console.log('Using default config');
     }
