@@ -5,7 +5,7 @@ package main
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/adaptor"
-	qingfeng "github.com/wdcbot/qingfeng"
+	qingfeng "github.com/buyfakett/qingfeng"
 )
 
 // @title Fiber 框架示例

@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	qingfeng "github.com/wdcbot/qingfeng"
+	qingfeng "github.com/buyfakett/qingfeng"
 )
 
 // @title Chi 框架示例

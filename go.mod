@@ -1,9 +1,9 @@
-module github.com/wdcbot/qingfeng
+module github.com/buyfakett/qingfeng
 
 go 1.20
 
 require (
-	github.com/gin-gonic/gin v1.9.1
+	github.com/gin-gonic/gin v1.12.0
 	github.com/swaggo/swag/v2 v2.0.0-rc4
 )
 

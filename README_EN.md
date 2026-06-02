@@ -1,4 +1,4 @@
-# QingFeng Swag by wdc
+# QingFeng Swag by buyfakett
 
 English | [中文](./README.md)
 
@@ -6,8 +6,7 @@ English | [中文](./README.md)
 
 > Better API documentation experience for Go developers.
 
-[![GitHub](https://img.shields.io/badge/GitHub-wdcbot/qingfeng-blue?logo=github)](https://github.com/wdcbot/qingfeng)
-[![Gitee](https://img.shields.io/badge/Gitee-Mirror-red?logo=gitee)](https://gitee.com/xiaowan1997/qingfeng)
+[![GitHub](https://img.shields.io/badge/GitHub-buyfakett/qingfeng-blue?logo=github)](https://github.com/buyfakett/qingfeng)
 
 ## 🔗 Online Resources
 
@@ -43,8 +42,7 @@ If your project is already using other Swagger UI components (like gin-swagger, 
 
 1. Install QingFeng Swag:
 ```bash
-go get github.com/wdcbot/qingfeng
-# China mirror: go get gitee.com/xiaowan1997/qingfeng
+go get github.com/buyfakett/qingfeng
 ```
 
 2. Replace route registration (keep your existing swag annotations and docs directory):
@@ -56,7 +54,7 @@ import ginSwagger "github.com/swaggo/gin-swagger"
 r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 // After (QingFeng Swag)
-import qingfeng "github.com/wdcbot/qingfeng"
+import qingfeng "github.com/buyfakett/qingfeng"
 r.GET("/doc/*any", qingfeng.Handler(qingfeng.Config{
     Title:   "My API",
     BasePath: "/doc",
@@ -86,8 +84,7 @@ go mod init myapi
 
 ```bash
 go get github.com/gin-gonic/gin
-go get github.com/wdcbot/qingfeng@latest
-# China mirror: go get gitee.com/xiaowan1997/qingfeng@latest
+go get github.com/buyfakett/qingfeng@latest
 go install github.com/swaggo/swag/cmd/swag@latest
 ```
 
@@ -98,7 +95,7 @@ package main
 
 import (
     "github.com/gin-gonic/gin"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 // @title My API
@@ -199,7 +196,7 @@ package main
 
 import (
     "github.com/gin-gonic/gin"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 func main() {
@@ -394,7 +391,7 @@ Besides Gin, QingFeng Swag provides standard `http.Handler` for any Go web frame
 import (
     "github.com/gofiber/fiber/v2"
     "github.com/gofiber/fiber/v2/middleware/adaptor"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 func main() {
@@ -415,7 +412,7 @@ func main() {
 ```go
 import (
     "github.com/labstack/echo/v4"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 func main() {
@@ -436,7 +433,7 @@ func main() {
 ```go
 import (
     "github.com/go-chi/chi/v5"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 func main() {
@@ -457,7 +454,7 @@ func main() {
 ```go
 import (
     "net/http"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 func main() {
@@ -477,6 +474,15 @@ Scan to add WeChat, note "QingFeng" to join the group:
 
 <img src="./screenshots/wechat.png" width="200" alt="WeChat QR Code">
 
+## 🙏 Acknowledgements
+
+This project is forked from [wdcbot/qingfeng](https://github.com/wdcbot/qingfeng). Thanks to the original author for their contributions.
+
 ## 📄 License
 
 MIT License
+
+Copyright (c) 2024 wdcbot (Original Author)
+Copyright (c) 2024-2026 buyfakett
+
+This project is based on [wdcbot/qingfeng](https://github.com/wdcbot/qingfeng). Thanks to the original author for their contributions.

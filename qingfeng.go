@@ -13,7 +13,6 @@ import (
 	"embed"
 	"encoding/json"
 	"io/fs"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -22,7 +21,7 @@ import (
 )
 
 // Version is the current version of QingFeng
-const Version = "1.6.7"
+const Version = "2.0.0"
 
 //go:embed ui/default/* ui/minimal/* ui/modern/* ui/assets/css/* ui/assets/webfonts/*
 var uiFS embed.FS
@@ -126,7 +125,7 @@ func DefaultConfig() Config {
 // 返回 Gin 框架的 handler，内部调用 HTTPHandler
 func Handler(cfg Config) gin.HandlerFunc {
 	httpHandler := HTTPHandler(cfg)
-	
+
 	return func(c *gin.Context) {
 		httpHandler.ServeHTTP(c.Writer, c.Request)
 	}
@@ -153,14 +152,11 @@ func HTTPHandler(cfg Config) http.Handler {
 
 	// 获取文档 JSON（优先级：DocJSON > DocPath > 自动生成）
 	var specJSON []byte
-	var docSource string
 	if cfg.DocJSON != nil {
 		specJSON = cfg.DocJSON
-		docSource = "DocJSON"
 	} else if cfg.DocPath != "" {
 		if data, err := os.ReadFile(cfg.DocPath); err == nil {
 			specJSON = data
-			docSource = cfg.DocPath
 		}
 	}
 
@@ -168,12 +164,8 @@ func HTTPHandler(cfg Config) http.Handler {
 	if cfg.AutoGenerate && specJSON == nil {
 		if data, err := generateSpec(cfg); err == nil {
 			specJSON = data
-			docSource = "AutoGenerate (OpenAPI 3.0)"
 		}
 	}
-
-	// 打印启动信息
-	printBanner(cfg, docSource)
 
 	// Prepare file servers for each theme
 	defaultFS, _ := fs.Sub(uiFS, "ui/default")
@@ -275,43 +267,6 @@ func HTTPHandler(cfg Config) http.Handler {
 		r.URL.Path = path
 		fileServers[theme].ServeHTTP(w, r)
 	})
-}
-
-// printBanner 打印启动信息
-func printBanner(cfg Config, docSource string) {
-	title := cfg.Title
-	if title == "" {
-		title = "API Documentation"
-	}
-
-	// 构建文档 URL
-	var docURL string
-	basePath := cfg.BasePath
-	if !strings.HasSuffix(basePath, "/") {
-		basePath += "/"
-	}
-	if cfg.Host != "" {
-		scheme := "http://"
-		if strings.HasPrefix(cfg.Host, "https://") || strings.HasPrefix(cfg.Host, "http://") {
-			docURL = cfg.Host + basePath
-		} else {
-			docURL = scheme + cfg.Host + basePath
-		}
-	} else {
-		docURL = "http://localhost:<port>" + basePath
-	}
-
-	log.Println("")
-	log.Println("┌──────────────────────────────────────────────────────────┐")
-	log.Println("│                       🗡️  QingFeng                        │")
-	log.Println("├──────────────────────────────────────────────────────────┤")
-	log.Printf("│  📄 Title:  %-45s │\n", truncateString(title, 45))
-	log.Printf("│  📂 Source: %-45s │\n", truncateString(docSource, 45))
-	log.Printf("│  🌐 URL:    %-45s │\n", truncateString(docURL, 45))
-	log.Println("├──────────────────────────────────────────────────────────┤")
-	log.Println("│  Swagger UI is ready! Open the URL above in browser.    │")
-	log.Println("└──────────────────────────────────────────────────────────┘")
-	log.Println("")
 }
 
 // truncateString 截断字符串（按字符而非字节，正确处理中文）

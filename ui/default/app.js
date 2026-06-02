@@ -1,6 +1,6 @@
 // QingFeng Swagger Frontend Application
 // 版本号从后端注入
-let QINGFENG_VERSION = '1.6.7';
+let QINGFENG_VERSION = '2.0.0';
 
 let swaggerData = null;
 let currentApi = null;
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 function displayVersion() {
     const footer = document.querySelector('aside > div:last-child');
     if (footer) {
-        footer.innerHTML = `Powered by <a href="https://github.com/wdcbot/qingfeng" target="_blank" class="text-blue-500 hover:underline">青峰</a> · v${QINGFENG_VERSION}`;
+        footer.innerHTML = `Powered by <a href="https://github.com/buyfakett/qingfeng" target="_blank" class="text-blue-500 hover:underline">buyfakett</a> · v${QINGFENG_VERSION}`;
     }
 }
 

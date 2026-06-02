@@ -1,4 +1,4 @@
-# 青峰Swag by wdc
+# 青峰Swag by buyfakett
 
 [English](./README_EN.md) | 中文
 
@@ -6,8 +6,7 @@
 
 > 为 Go 开发者提供更好的 API 文档体验。
 
-[![GitHub](https://img.shields.io/badge/GitHub-wdcbot/qingfeng-blue?logo=github)](https://github.com/wdcbot/qingfeng)
-[![Gitee](https://img.shields.io/badge/Gitee-镜像-red?logo=gitee)](https://gitee.com/xiaowan1997/qingfeng)
+[![GitHub](https://img.shields.io/badge/GitHub-buyfakett/qingfeng-blue?logo=github)](https://github.com/buyfakett/qingfeng)
 
 ## 🔗 在线资源
 
@@ -52,7 +51,7 @@ package main
 
 import (
     "github.com/gin-gonic/gin"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 // @title 我的 API
@@ -85,7 +84,7 @@ func hello(c *gin.Context) {
 ```
 
 **就这么简单！** 用户只需要：
-1. `go get github.com/wdcbot/qingfeng@latest`
+1. `go get github.com/buyfakett/qingfeng@latest`
 2. 写注释
 3. 启动服务
 
@@ -99,8 +98,7 @@ func hello(c *gin.Context) {
 
 1. 安装青峰Swag：
 ```bash
-go get github.com/wdcbot/qingfeng@latest
-# 国内镜像: go get gitee.com/xiaowan1997/qingfeng
+go get github.com/buyfakett/qingfeng@latest
 ```
 
 2. 替换路由注册（保留原有的 swag 注释和 docs 目录）：
@@ -112,7 +110,7 @@ import ginSwagger "github.com/swaggo/gin-swagger"
 r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 // 替换后 (青峰Swag) - 方式1：使用内置生成器（推荐）
-import qingfeng "github.com/wdcbot/qingfeng"
+import qingfeng "github.com/buyfakett/qingfeng"
 r.GET("/doc/*any", qingfeng.Handler(qingfeng.Config{
     Title:        "我的 API",
     AutoGenerate: true, // 内置生成器，无需 swag CLI
@@ -144,8 +142,7 @@ go mod init myapi
 
 ```bash
 go get github.com/gin-gonic/gin
-go get github.com/wdcbot/qingfeng@latest
-# 国内镜像: go get gitee.com/xiaowan1997/qingfeng@latest
+go get github.com/buyfakett/qingfeng@latest
 # 注意：v2.0.0 起无需安装 swag CLI！
 ```
 
@@ -156,7 +153,7 @@ package main
 
 import (
     "github.com/gin-gonic/gin"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 // @title 我的 API
@@ -260,7 +257,7 @@ package main
 
 import (
     "github.com/gin-gonic/gin"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 func main() {
@@ -291,7 +288,7 @@ package main
 
 import (
     "net/http"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 func main() {
@@ -317,7 +314,7 @@ package main
 
 import (
     "github.com/labstack/echo/v4"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 func main() {
@@ -346,7 +343,7 @@ package main
 import (
     "github.com/gofiber/fiber/v2"
     "github.com/gofiber/fiber/v2/middleware/adaptor"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 func main() {
@@ -375,7 +372,7 @@ package main
 import (
     "net/http"
     "github.com/go-chi/chi/v5"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 func main() {
@@ -403,7 +400,7 @@ package main
 
 import (
     "github.com/gin-gonic/gin"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 func main() {
@@ -480,7 +477,7 @@ package main
 import (
     _"embed""embed"
     "github.com/gin-gonic/gin"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 //go:embed docs/swagger.json
@@ -642,7 +639,7 @@ swag init
 import (
     "github.com/gofiber/fiber/v2"
     "github.com/gofiber/fiber/v2/middleware/adaptor"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 func main() {
@@ -663,7 +660,7 @@ func main() {
 ```go
 import (
     "github.com/labstack/echo/v4"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 func main() {
@@ -684,7 +681,7 @@ func main() {
 ```go
 import (
     "github.com/go-chi/chi/v5"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 func main() {
@@ -705,7 +702,7 @@ func main() {
 ```go
 import (
     "net/http"
-    qingfeng "github.com/wdcbot/qingfeng"
+    qingfeng "github.com/buyfakett/qingfeng"
 )
 
 func main() {
@@ -725,6 +722,15 @@ func main() {
 
 <img src="./screenshots/wechat.png" width="200" alt="微信二维码">
 
+## 🙏 致谢
+
+本项目 fork 自 [wdcbot/qingfeng](https://github.com/wdcbot/qingfeng)，感谢原作者的贡献。
+
 ## 📄 License
 
 MIT License
+
+Copyright (c) 2024 wdcbot (原作者)
+Copyright (c) 2024-2026 buyfakett
+
+本项目基于 [wdcbot/qingfeng](https://github.com/wdcbot/qingfeng) 开发，感谢原作者的贡献。

@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/swaggo/swag v1.16.6
-	github.com/wdcbot/qingfeng v0.0.0
+	github.com/buyfakett/qingfeng v0.0.0
 )
 
 require (
@@ -49,4 +49,4 @@ require (
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
 
-replace github.com/wdcbot/qingfeng => ../
+replace github.com/buyfakett/qingfeng => ../

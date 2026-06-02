@@ -6,7 +6,7 @@
 
 ### 报告 Bug
 
-如果你发现了 Bug，请在 [GitHub Issues](https://github.com/wdcbot/qingfeng/issues) 中提交，并包含：
+如果你发现了 Bug，请在 [GitHub Issues](https://github.com/buyfakett/qingfeng/issues) 中提交，并包含：
 
 - 问题描述
 - 复现步骤
@@ -75,7 +75,7 @@ docs: 更新 README 添加移动端截图
 
 ```bash
 # 克隆仓库
-git clone https://github.com/wdcbot/qingfeng.git
+git clone https://github.com/buyfakett/qingfeng.git
 cd qingfeng
 
 # 运行示例
