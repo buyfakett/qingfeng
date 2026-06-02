@@ -8,22 +8,6 @@
 
 [![GitHub](https://img.shields.io/badge/GitHub-buyfakett/qingfeng-blue?logo=github)](https://github.com/buyfakett/qingfeng)
 
-## 🔗 在线资源
-
-- 🌐 **在线预览**: [https://wdc.zeabur.app/swagger/](https://wdc.zeabur.app/swagger/)
-- 📖 **完整文档**: [https://wdc.zeabur.app/qingfeng/qingfeng.html](https://wdc.zeabur.app/qingfeng/qingfeng.html)
-- 🚀 **快速开始**: [https://wdc.zeabur.app/qingfeng/01-quick-start.html](https://wdc.zeabur.app/qingfeng/01-quick-start.html)
-- 🔌 **多框架支持**: [https://wdc.zeabur.app/qingfeng/06-frameworks.html](https://wdc.zeabur.app/qingfeng/06-frameworks.html)
-
-## 📸 预览
-[https://wdc.zeabur.app/swagger/](https://wdc.zeabur.app/swagger/)
-
-## 🆕 v2.0.0 新特性
-
-- 🚀 **内置文档生成器** - 无需安装 swag CLI，零外部依赖
-- 📄 **OpenAPI 3.0/3.1 支持** - 自动生成现代化的 OpenAPI 3.x 规范文档
-- ⚡ **一行代码启用** - 只需设置 `AutoGenerate: true`，文档自动生成
-- 🔄 **完全向后兼容** - 现有用户无需修改任何代码
 
 ## ✨ 特性
 
@@ -43,8 +27,6 @@
 - 🔌 **多框架支持** - 原生支持 Gin，其他框架可通过标准 http.Handler 适配
 
 ## 🚀 极简使用（推荐）
-
-**v2.0.0 新增：内置文档生成器，无需安装任何外部工具！**
 
 ```go
 package main

@@ -1,6 +1,6 @@
 // QingFeng Swagger Frontend Application
 // 版本号从后端注入
-let QINGFENG_VERSION = '2.0.0';
+let QINGFENG_VERSION = '1.7.0';
 
 let swaggerData = null;
 let currentApi = null;
